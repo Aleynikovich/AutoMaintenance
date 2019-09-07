@@ -6,35 +6,47 @@
         xmlns:local="clr-namespace:AutoMaintenance"
         mc:Ignorable="d"
         Background="White"
-        Icon="UI Elements/Logos/KUKALOGO.png"
-        Title="Launcher" Height="300" Width="500" WindowStyle="None" AllowsTransparency="True" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
+        Icon="UI Elements/Logos/KUKAGREYCIRCLE.png"
+        Title="AutoMaintenance" Height="500" Width="800" WindowStyle="None" AllowsTransparency="True" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="60"/>
+    </WindowChrome.WindowChrome>
 
     <Grid Name="MainGrid">
-        <Image  Source="UI Elements/Logos/KUKALOGO2.PNG" Opacity=".2" HorizontalAlignment="Left" Height="322" VerticalAlignment="Top" Width="360" Margin="211,31,-71,-53"/>
-        <Image Name="KUKALOGO" MouseDown="KUKALOGO_OnMouseDown" Source="UI Elements/Logos/KUKALOGO3.PNG" Margin="-8,8,346,267"></Image>
-        <TextBlock Background="Transparent" Margin="9,40,325,233"  Text="KUKA.AutoMaintenace" Foreground="#FF878787" />
-        <Image Opacity=".5" Source="UI Elements\MenuButtons\settings.png" Margin="50,104,406,162"/>
-        <TextBlock Background="Transparent" Margin="44,139,397,141"  Text="Configurar" Foreground="#FF878787" />
-        <Image Opacity=".5" Source="UI Elements\MenuButtons\update.png" Margin="50,188,406,78"/>
-        <TextBlock Background="Transparent" Margin="46,222,401,58"  Text="Actualizar" Foreground="#FF878787" />
 
-        <StackPanel Orientation="Horizontal" Opacity=".5" Margin="138,84,357,38">
-            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-        </StackPanel>
+        <!-- Title Bar -->
+        <Grid VerticalAlignment="Top" Margin="1,0,-1,0">
+            <StackPanel Height="20" WindowChrome.IsHitTestVisibleInChrome="True" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+                <Button Style="{StaticResource SomeButtonStyle}" BorderBrush="Transparent" Width="30" Name="Minimize" Foreground="#FFACACAC" Click="Minimize_Click" Focusable="False" Background="{x:Null}" FontSize="18">-</Button>
+                <Button  Style="{StaticResource SomeButtonStyle}" Background="Transparent" Width="30" BorderBrush="Transparent" x:Name="Close" Click="Close_OnClick_" Foreground="#FFACACAC" FontFamily="Microsoft New Tai Lue" Focusable="False" Content="x" FontSize="18"/>
+            </StackPanel>
+        </Grid>
 
-        <Button Name="ImportCreate" Opacity="0" Margin="199,127,186,122" Panel.ZIndex="100"></Button>
-        <Image Opacity=".5" Source="UI Elements\MenuButtons\import.png" Margin="196,129,251,128"/>
-        <Image Opacity=".5" Source="UI Elements/MenuButtons/right-arrow.png" Margin="251,145,232,137"></Image>
-        <Image Opacity=".5" Source="UI Elements/MenuButtons/document.png" Margin="274,136,189,128"></Image>
-        <TextBlock Background="Transparent" Margin="193,176,172,104"  Text="Importar y crear informes" Foreground="#FF878787" />
+        <!-- Logo und name -->
 
-        <Image Opacity=".5" MouseDown="Salir_OnMouseDown" Source="UI Elements/MenuButtons/salir.png" Margin="392,185,71,79"></Image>
-        <TextBlock Background="Transparent"  Margin="399,222,73,58"  Text="Salir" Foreground="#FF878787" />
+        <Image Source="UI Elements/Logos/kukaplain.png" Margin="22,18,592,436"></Image>
+        <TextBlock Background="Transparent"   Text="KUKA.AutoMaintenace" Foreground="#FF878787" FontSize="16" Margin="22,69,570,408" Opacity="0.8" />
 
-        <Image Opacity=".5" MouseDown="Information_OnMouseDown" Source="UI Elements/MenuButtons/information.png" Margin="392,103,71,161"></Image>
-        <TextBlock Background="Transparent"  Margin="399,139,73,141"  Text="Info" Foreground="#FF878787" />
+        <!--File selection-->
+        <TextBlock Foreground="#FF878787" Text="Importar" Margin="46,158,707,322"></TextBlock>
+        <Image MouseDown="Import_OnMouseDown" Opacity=".3" Source="UI Elements/MenuButtons/import.png" Margin="49,124,715,343" RenderTransformOrigin="0.479,0.492"/>
 
-        <TextBlock TextAlignment="Right" MouseDown="UIElement_OnMouseDown" HorizontalAlignment="Right" FontFamily="Siemens Sans" FontSize="7" Margin="0,282,3,0"><Run Text="© 2019 KUKA AG. All rights reserved."/><LineBreak/><Run Text="www.github.com/Aleynikovik"/></TextBlock>
+        <TextBlock Foreground="#FF878787" Text="Borrar" Margin="141,158,625,322"></TextBlock>
+        <Image MouseDown="Clear_OnMouseDown" Opacity=".3" Source="UI Elements/MenuButtons/delete.png" Margin="145,136,630,343" RenderTransformOrigin="0.479,0.492"/>
 
+
+        <ListBox Name="fileList"  Margin="40,182,619,20" SelectionMode="Extended" BorderBrush="#FFC9C9C9" BorderThickness="0.5"></ListBox>
+
+
+
+
+
+
+
+        <!-- Watermark -->
+        <TextBlock TextAlignment="Right" HorizontalAlignment="Right" FontFamily="Siemens Sans" FontSize="10" Margin="0,474,4,0" ><Run Text="© 2019 KUKA AG. All rights reserved."/><LineBreak/><Run Text="www.github.com/Aleynikovik"/></TextBlock>
+        <!-- Background image -->
+        <Image  Visibility="Visible" Source="UI Elements/Logos/KUKAGREYCIRCLE.png" Opacity=".25" HorizontalAlignment="Left" Height="473" VerticalAlignment="Top" Width="564" Margin="383,65,-147,-38"/>
     </Grid>
+
 </Window>

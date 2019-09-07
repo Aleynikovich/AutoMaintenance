@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
+using System.IO;
 
 namespace AutoMaintenance
 {
@@ -23,36 +25,40 @@ namespace AutoMaintenance
         public MainWindow()
         {
             InitializeComponent();
-            ImportCreate.Click += ImportCreate_Click;
 
         }
 
-        private void ImportCreate_Click(object sender, RoutedEventArgs e)
+        private void Minimize_Click(object sender, RoutedEventArgs e)
         {
-            ImportCreate windowImportCreate = new ImportCreate();
-            windowImportCreate.Show();
-        }
-
-        private void KUKALOGO_OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            System.Diagnostics.Process.Start("http://www.kuka.com");
-        }
-
-        private void UIElement_OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            System.Diagnostics.Process.Start("http://www.github.com/Aleynikovik");
+            this.WindowState = WindowState.Minimized;
         }
 
 
-        private void Salir_OnMouseDown(object sender, MouseButtonEventArgs e)
+        private void Close_OnClick_(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
-        private void Information_OnMouseDown(object sender, MouseButtonEventArgs e)
+        private void Import_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            throw new NotImplementedException();
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Multiselect = true;
+            openFileDialog.Filter = "XML Files (*.xml)|*.xml";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                foreach (var item in openFileDialog.FileNames)
+                {
+                    
+                    fileList.Items.Add(System.IO.Path.GetFileName(item));
+                }
+            }
+
         }
 
+        private void Clear_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            fileList.Items.Clear();
+        }
     }
 }

@@ -35,7 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>UI Elements\Logos\KUKALOGO1.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -58,10 +59,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="ImportCreate.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -70,13 +67,17 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ImportCreate.xaml.cs">
-      <DependentUpon>ImportCreate.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
     </Compile>
+    <Page Include="Styles\TitleBarButtons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\ScrollBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -105,17 +106,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI Elements\Logos\KUKALOGO2.PNG" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI Elements\Logos\KUKALOGO.png" />
-    <Resource Include="UI Elements\Logos\KUKALOGO1.ico" />
-    <Resource Include="UI Elements\Logos\KUKALOGO1.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI Elements\Logos\KUKALOGO3.PNG" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="UI Elements\MenuButtons\update.png" />
   </ItemGroup>
   <ItemGroup>
@@ -136,5 +126,22 @@
   <ItemGroup>
     <Resource Include="UI Elements\MenuButtons\information.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI Elements\Logos\KUKAGREYCIRCLE.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI Elements\Logos\kukaplain.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="TestFiles\asasd - Copy %282%29.xml" />
+    <Resource Include="TestFiles\asasd - Copy %283%29.xml" />
+    <Resource Include="TestFiles\asasd - Copy %284%29.xml" />
+    <Resource Include="TestFiles\asasd - Copy.xml" />
+    <Resource Include="TestFiles\asasd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI Elements\MenuButtons\delete.png" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
