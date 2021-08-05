@@ -42,7 +42,7 @@
         <Image MouseDown="Start_OnMouseDown" Opacity=".3" Source="UI Elements/MenuButtons/update.png" Margin="463,240,219,178" RenderTransformOrigin="0.479,0.492"/>
 
         <!-- Watermark -->
-        <TextBlock x:Name="Watermark" TextAlignment="Right" HorizontalAlignment="Right" FontFamily="Siemens Sans" FontSize="10" Margin="0,474,4,0" d:IsLocked="True" ><Run Text="© 2021 KUKA AG. All rights reserved."/><LineBreak/><Run Text="www.github.com/Aleynikovik"/></TextBlock>
+        <TextBlock x:Name="Watermark" TextAlignment="Right" HorizontalAlignment="Right" FontFamily="Siemens Sans" FontSize="10" Margin="0,474,4,0" d:IsLocked="True" ><Run Text="© 2021 KUKA AG. All rights reserved."/><LineBreak/><Run Text="www.github.com/Aleynikovich"/></TextBlock>
         <!-- Background image -->
         <Image  Visibility="Visible" Source="UI Elements/Logos/KUKAGREYCIRCLE.png" Opacity=".25" HorizontalAlignment="Left" Height="674" VerticalAlignment="Top" Width="891" Margin="284,41,0,0" IsHitTestVisible="False"/>
     </Grid>

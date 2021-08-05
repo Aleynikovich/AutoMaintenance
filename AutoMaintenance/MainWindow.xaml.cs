@@ -60,6 +60,9 @@ namespace AutoMaintenance
 
         private void Start_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
+            string krcName, krcSerialNo, krcVersion, krcTech;
+
+
             if (zipCounter > 0)
             {
                 for (int i = 0; i < zipCounter; i++)
@@ -75,7 +78,9 @@ namespace AutoMaintenance
                             entry.ExtractToFile(tempFile, true);
                             string content = File.ReadAllText(tempFile);
                             //Trace.Write(content);
-
+                            krcName = content.Substring(content.LastIndexOf("IRSerialNr=") + "IRSerialNr=".Length, content.IndexOf("\n[Version]") - (content.LastIndexOf("IRSerialNr=") + "IRSerialNr=".Length));
+                            Trace.WriteLine(krcName.TrimEnd('\n'));
+                            File.Copy("plantillainforme.docx", krcName.TrimEnd('\r', '\n') + " informe de mantenimiento.docx");
                         }
 
                     }
