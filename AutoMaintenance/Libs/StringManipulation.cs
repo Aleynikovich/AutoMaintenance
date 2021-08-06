@@ -4,6 +4,13 @@ namespace AutoMaintenance.Libs
 {
     public class StringManipulation
     {
+        /// <summary>
+        /// Allows to search for two strings in a text file and get the string in between them
+        /// </summary>
+        /// <param name="strSource">String to search in</param>
+        /// <param name="strStart">Unique string that marks the start of the search</param>
+        /// <param name="strEnd">Unique string that marks the end of the search</param>
+        /// <returns>String between the selected start and end string</returns>
         public static string GetBetween(string strSource, string strStart, string strEnd = "def")
         {
             if (strSource.Contains(strStart) && (strSource.Contains(strEnd) || strEnd == "def"))
