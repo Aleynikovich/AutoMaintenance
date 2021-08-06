@@ -63,11 +63,24 @@ namespace AutoMaintenance
 
         }
 
+        /// <summary>
+        /// Clear imported .zip file list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
         private void Clear_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             fileList.Items.Clear();
             zipCounter = 0;
         }
+
+
+        /// <summary>
+        /// Transform imported .zip files into maintenance report in docx file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param
 
         private void Start_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -87,7 +100,7 @@ namespace AutoMaintenance
                         ZipArchiveEntry entry = archive.GetEntry("am.ini");
                         if (entry != null)
                         {
-                            //Trace.WriteLine("Data found");
+
                             string tempFile =       Path.GetTempFileName();
                             entry.ExtractToFile(tempFile, true);
                             string content  =       File.ReadAllText(tempFile);
