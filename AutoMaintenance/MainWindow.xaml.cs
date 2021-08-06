@@ -12,12 +12,15 @@ namespace AutoMaintenance
     /// </summary>
     public partial class MainWindow : Window
     {
-        string[] filePath = new string[100];
-        int zipCounter = 0;
+        string[] filePath = new string[100]; //Path buffer for selected .zip files
+        int zipCounter = 0; 
+
+        /// <summary>
+        /// General functions
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
-
         }
 
         private void Minimize_Click(object sender, RoutedEventArgs e)
@@ -31,20 +34,28 @@ namespace AutoMaintenance
             this.Close();
         }
 
+        /// <summary>
+        /// Import file button, opens file search dialog to allow selection of .zip
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
         private void Import_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Multiselect = true;
-            openFileDialog.Filter = "ZIP Files (*.zip)|*.zip";
-            
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Multiselect = true,                 //Allow multiple zips to be imported
+                Filter = "ZIP Files (*.zip)|*.zip"  //Allow only .zip file type
+            };
+
 
             if (openFileDialog.ShowDialog() == true)
             {
                 zipCounter = 0;
-                foreach (string item in openFileDialog.FileNames)
+                foreach (string item in openFileDialog.FileNames)       //Fill filePath strings with the selected .zip file paths
                 {
-                    _ = fileList.Items.Add(System.IO.Path.GetFileName(item));
-                    filePath[zipCounter] = System.IO.Path.GetFullPath(item);
+                    _ = fileList.Items.Add(Path.GetFileName(item));
+                    filePath[zipCounter] = Path.GetFullPath(item);
                     //Trace.WriteLine("added " + filePath[zipCounter]);
                     zipCounter++;
                 }
@@ -60,27 +71,35 @@ namespace AutoMaintenance
 
         private void Start_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            string krcName, krcSerialNo, krcVersion, krcTech;
-
+            string  krcName, 
+                    krcSerialNo,
+                    krcVersion,
+                    krcTech;
 
             if (zipCounter > 0)
             {
                 for (int i = 0; i < zipCounter; i++)
                 {
-                    //Trace.WriteLine(filePath[i]);
-                    using (ZipArchive archive = ZipFile.OpenRead(filePath[i]))
+                    using (ZipArchive archive = ZipFile.OpenRead(filePath[i])) //Open .zip in read mode
                     {
+                        // TODO: Victor, aqui ya tiene el .zip abierto. Habría que hacer una bifurcacion: 
+
                         ZipArchiveEntry entry = archive.GetEntry("am.ini");
                         if (entry != null)
                         {
                             //Trace.WriteLine("Data found");
-                            string tempFile = Path.GetTempFileName();
+                            string tempFile =       Path.GetTempFileName();
                             entry.ExtractToFile(tempFile, true);
-                            string content = File.ReadAllText(tempFile);
-                            //Trace.Write(content);
-                            krcName = content.Substring(content.LastIndexOf("IRSerialNr=") + "IRSerialNr=".Length, content.IndexOf("\n[Version]") - (content.LastIndexOf("IRSerialNr=") + "IRSerialNr=".Length));
-                            Trace.WriteLine(krcName.TrimEnd('\n'));
+                            string content  =       File.ReadAllText(tempFile);
+
+                            krcName         =       Libs.StringManipulation.GetBetween(content, "RobName=", "IRSerialNr=");
+                            krcSerialNo     =       Libs.StringManipulation.GetBetween(content, "IRSerialNr=", "[Version]");
+                            krcVersion      =       Libs.StringManipulation.GetBetween(content, "[Version]", "[TechPacks]");
+                            krcTech         =       Libs.StringManipulation.GetBetween(content, "[TechPacks]", null);
+
+                            Trace.WriteLine(krcSerialNo.TrimEnd('\n'));
                             File.Copy("plantillainforme.docx", krcName.TrimEnd('\r', '\n') + " informe de mantenimiento.docx");
+                            
                         }
 
                     }
