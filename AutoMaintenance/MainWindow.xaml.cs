@@ -13,7 +13,7 @@ namespace AutoMaintenance
     public partial class MainWindow : Window
     {
         string[] filePath = new string[100]; //Path buffer for selected .zip files
-        int zipCounter = 0; 
+        int zipCounter = 0;
 
         /// <summary>
         /// General functions
@@ -84,7 +84,7 @@ namespace AutoMaintenance
 
         private void Start_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            string  krcName, 
+            string krcName,
                     krcSerialNo,
                     krcVersion,
                     krcTech;
@@ -101,24 +101,24 @@ namespace AutoMaintenance
                         if (entry != null)
                         {
 
-                            string tempFile =       Path.GetTempFileName();
+                            string tempFile = Path.GetTempFileName();
                             entry.ExtractToFile(tempFile, true);
-                            string content  =       File.ReadAllText(tempFile);
+                            string content = File.ReadAllText(tempFile);
 
-                            krcName         =       Libs.StringManipulation.GetBetween(content, "RobName=", "IRSerialNr=");
-                            krcSerialNo     =       Libs.StringManipulation.GetBetween(content, "IRSerialNr=", "[Version]");
-                            krcVersion      =       Libs.StringManipulation.GetBetween(content, "[Version]", "[TechPacks]");
-                            krcTech         =       Libs.StringManipulation.GetBetween(content, "[TechPacks]", null);
+                            krcName = Libs.StringManipulation.GetBetween(content, "RobName=", "IRSerialNr=");
+                            krcSerialNo = Libs.StringManipulation.GetBetween(content, "IRSerialNr=", "[Version]");
+                            krcVersion = Libs.StringManipulation.GetBetween(content, "[Version]", "[TechPacks]");
+                            krcTech = Libs.StringManipulation.GetBetween(content, "[TechPacks]", null); //Check?
 
                             Trace.WriteLine(krcSerialNo.TrimEnd('\n'));
-                            File.Copy("plantillainforme.docx", krcName.TrimEnd('\r', '\n') + " informe de mantenimiento.docx");
-                            
+                            File.Copy("plantillainforme.docx", krcName.TrimEnd('\r', '\n') + " Informe de mantenimiento.docx");
+
                         }
 
                     }
                 }
             }
-           
+
         }
 
 
