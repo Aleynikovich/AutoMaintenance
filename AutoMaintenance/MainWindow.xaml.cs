@@ -91,6 +91,8 @@ namespace AutoMaintenance
 
         private void Start_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
+            Directory.CreateDirectory("Mantenimiento");
+            Directory.CreateDirectory("Programas");
 
             if (zipCounter > 0)
             {               
@@ -116,11 +118,13 @@ namespace AutoMaintenance
                             };
 
                             //Trace.WriteLine(tempKrc.SerialNo.TrimEnd('\n'));
-                            WordLibs.CreateWordDocument(@"C:\Users\XYZ\source\repos\Aleynikovich\AutoMaintenance\AutoMaintenance\Assets\plantillaAutoMaintenance.docx",
-                                @"C:\Users\XYZ\source\repos\Aleynikovich\AutoMaintenance\AutoMaintenance\Assets\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + " Informe de mantenimiento.docx", tempKrc);
-                            
+                            Directory.CreateDirectory(@"Programas\" + tempKrc.SerialNo.TrimEnd('\r', '\n'));
+                            Directory.CreateDirectory(@"Programas\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + "\\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + " - " + System.DateTime.Now.Year + "-" + System.DateTime.Now.Month + "-" + System.DateTime.Now.Day);
+                            File.Copy(tempFile, @"Programas\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + "\\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + " - " + System.DateTime.Now.Year + "-" + System.DateTime.Now.Month + "-" + System.DateTime.Now.Day + "\\" + Path.GetFileName(filePath[i]));
+                            WordLibs.CreateWordDocument(@"C:\Users\XYZ\Source\Repos\Aleynikovich\AutoMaintenance\AutoMaintenance\Assets\plantillaAutoMaintenance.docx",
+                                @"C:\Users\XYZ\Source\Repos\Aleynikovich\AutoMaintenance\AutoMaintenance\bin\Debug\Mantenimiento\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + " - " + System.DateTime.Now.Year + "-" + System.DateTime.Now.Month + "-" + System.DateTime.Now.Day + ".docx", tempKrc);
                         }
-
+                 
                     }
                 }
 
