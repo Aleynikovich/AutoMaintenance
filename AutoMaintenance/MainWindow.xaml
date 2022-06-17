@@ -18,7 +18,7 @@
         <Grid VerticalAlignment="Top" Margin="1,0,-1,0">
             <StackPanel Height="20" WindowChrome.IsHitTestVisibleInChrome="True" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
                 <Button Style="{StaticResource SomeButtonStyle}" BorderBrush="Transparent" Width="30" Name="Minimize" Foreground="#FFACACAC" Click="Minimize_Click" Focusable="False" Background="{x:Null}" FontSize="18">-</Button>
-                <Button  Style="{StaticResource SomeButtonStyle}" Background="Transparent" Width="30" BorderBrush="Transparent" x:Name="Close" Click="Close_OnClick_" Foreground="#FFACACAC" FontFamily="Microsoft New Tai Lue" Focusable="False" Content="x" FontSize="18"/>
+                <Button Style="{StaticResource SomeButtonStyle}" Background="Transparent" Width="30" BorderBrush="Transparent" x:Name="Close" Click="Close_OnClick_" Foreground="#FFACACAC" FontFamily="Microsoft New Tai Lue" Focusable="False" Content="x" FontSize="18"/>
             </StackPanel>
         </Grid>
 
@@ -44,7 +44,7 @@
         <!-- Watermark -->
         <TextBlock x:Name="Watermark" TextAlignment="Right" HorizontalAlignment="Right" FontFamily="Siemens Sans" FontSize="10" Margin="0,474,4,0" d:IsLocked="True" ><Run Text="© 2021 KUKA AG. All rights reserved."/><LineBreak/><Run Text="www.github.com/Aleynikovich"/></TextBlock>
         <!-- Background image -->
-        <Image  Visibility="Visible" Source="UI Elements/Logos/KUKAGREYCIRCLE.png" Opacity=".25" HorizontalAlignment="Left" Height="674" VerticalAlignment="Top" Width="891" Margin="284,41,0,0" IsHitTestVisible="False"/>
+        <Image  Visibility="Visible" Source="UI Elements/Logos/KUKAGREYCIRCLE.png" Opacity=".25" HorizontalAlignment="Left" Height="674" VerticalAlignment="Top" Width="891" Margin="156,50,0,0" IsHitTestVisible="False"/>
     </Grid>
 
 </Window>
