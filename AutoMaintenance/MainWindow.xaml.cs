@@ -4,14 +4,21 @@ using System.Windows.Input;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using OfficeOpenXml;
+using System.Threading.Tasks;
+using System;
+using System.Windows.Controls;
+using Microsoft.Office.Interop.Word;
 
 namespace AutoMaintenance
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : System.Windows.Window
     {
+        
+
         string[] filePath = new string[100]; //Path buffer for selected .zip files
         int zipCounter = 0;
 
@@ -21,6 +28,7 @@ namespace AutoMaintenance
         public MainWindow()
         {
             InitializeComponent();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         }
 
         private void Minimize_Click(object sender, RoutedEventArgs e)
@@ -82,16 +90,20 @@ namespace AutoMaintenance
         /// <param name="sender"></param>
         /// <param name="e"></param
 
-        private void Start_OnMouseDown(object sender, MouseButtonEventArgs e)
+        private async void Start_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            string krcName,
+
+           
+            string  krcName,
                     krcSerialNo,
                     krcVersion,
                     krcTech;
 
             if (zipCounter > 0)
             {
-                for (int i = 0; i < zipCounter; i++)
+
+               
+                 for (int i = 0; i < zipCounter; i++)
                 {
                     using (ZipArchive archive = ZipFile.OpenRead(filePath[i])) //Open .zip in read mode
                     {
@@ -108,11 +120,13 @@ namespace AutoMaintenance
                             krcName = Libs.StringManipulation.GetBetween(content, "RobName=", "IRSerialNr=");
                             krcSerialNo = Libs.StringManipulation.GetBetween(content, "IRSerialNr=", "[Version]");
                             krcVersion = Libs.StringManipulation.GetBetween(content, "[Version]", "[TechPacks]");
-                            krcTech = Libs.StringManipulation.GetBetween(content, "[TechPacks]", null); //Check?
+                            krcTech = Libs.StringManipulation.GetBetween(content, "[TechPacks]", "EOF");
 
                             Trace.WriteLine(krcSerialNo.TrimEnd('\n'));
-                            File.Copy("plantillainforme.docx", krcName.TrimEnd('\r', '\n') + " Informe de mantenimiento.docx");
-
+                            //File.Copy("plantillainforme.docx", krcSerialNo.TrimEnd('\r', '\n') + " Informe de mantenimiento.docx");
+                            WordLibs.CreateWordDocument(@"C:\Users\XYZ\source\repos\Aleynikovich\AutoMaintenance\AutoMaintenance\Assets\plantillainforme.docx", @"C:\Users\XYZ\source\repos\Aleynikovich\AutoMaintenance\AutoMaintenance\Assets\" + krcSerialNo.TrimEnd('\r', '\n') + " Informe de mantenimiento.docx", krcSerialNo);
+                            //var excelFile = new FileInfo(@"D:\"+ krcSerialNo.TrimEnd('\r', '\n') + "demo.xlsx");
+                            //await CreateExcelFile(krcName, excelFile);
                         }
 
                     }
@@ -121,8 +135,6 @@ namespace AutoMaintenance
 
         }
 
-
-
-
     }
+
 }
