@@ -63,6 +63,7 @@ namespace AutoMaintenance
                     FindAndReplace(wordApp, "<KrName>", krc.Name);
                     FindAndReplace(wordApp, "<KRCVersion>", krc.Version);
                     FindAndReplace(wordApp, "<KRCTechpacks>", krc.Tech);
+                    FindAndReplace(wordApp, "<LoadData>", krc.LoadData);
                     FindAndReplace(wordApp, "<MaintenanceDate>", System.DateTime.Now.Date);
                 }
 
