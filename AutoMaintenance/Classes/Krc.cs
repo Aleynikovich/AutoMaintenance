@@ -7,6 +7,8 @@
         public string SerialNo { get; set; }
         public string Version { get; set; }
         public string Tech { get; set; }
+        public string LoadData { get; set; }
+
     }
 
 }
