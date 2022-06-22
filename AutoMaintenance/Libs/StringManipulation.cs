@@ -110,9 +110,15 @@ namespace AutoMaintenance
 
         public static bool IsUnique(string[] lines, string currentLine, int currentPosition)
         {
-            for (int i = currentPosition; i >= currentPosition; i--)
+          
+            for (int i = 0; i <= currentPosition; i++)
             {
-                if (lines[i] == currentLine)
+                if (i == currentPosition)
+                {
+                    return true;
+                }
+
+                if (GetBetween(lines[i], "]=", "}}") == GetBetween(currentLine, "]=", "}}"))
                 {
                     return false;
                 }

@@ -172,7 +172,7 @@ namespace AutoMaintenance
 
                 tempKrc.Name = StringManipulation.GetBetween(amIniContent, "RobName=", "IRSerialNr=");
                 tempKrc.SerialNo = StringManipulation.GetBetween(amIniContent, "IRSerialNr=", "[Version]");
-                tempKrc.Version = StringManipulation.GetBetween(amIniContent, "[Version]", "[TechPacks]");
+                tempKrc.Version = StringManipulation.GetBetween(amIniContent, "Version=", "\r\n");
                 tempKrc.Tech = StringManipulation.GetRealTechData(StringManipulation.GetBetween(amIniContent, "[TechPacks]"));
 
             }
