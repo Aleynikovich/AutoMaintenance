@@ -7,44 +7,86 @@
         mc:Ignorable="d"
         Background="White"
         Icon="UI Elements/Logos/KUKAGREYCIRCLE.png"
-        Title="AutoMaintenance" Height="500" Width="800" WindowStyle="None" AllowsTransparency="True" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
+        Title="AutoMaintenance" Height="400" Width="600" WindowStyle="None" AllowsTransparency="True" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="60"/>
     </WindowChrome.WindowChrome>
 
-    <Grid Name="MainGrid">
-        <!-- Title Bar -->
+    <Grid Name="MainGrid" HorizontalAlignment="Center" Width="600">
         <!-- Title Bar -->
         <Grid VerticalAlignment="Top" Margin="1,0,-1,0">
-            <StackPanel Height="20" WindowChrome.IsHitTestVisibleInChrome="True" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
-                <Button Style="{StaticResource SomeButtonStyle}" BorderBrush="Transparent" Width="30" Name="Minimize" Foreground="#FFACACAC" Click="Minimize_Click" Focusable="False" Background="{x:Null}" FontSize="18">-</Button>
-                <Button Style="{StaticResource SomeButtonStyle}" Background="Transparent" Width="30" BorderBrush="Transparent" x:Name="Close" Click="Close_OnClick_" Foreground="#FFACACAC" FontFamily="Microsoft New Tai Lue" Focusable="False" Content="x" FontSize="18"/>
+            <StackPanel Height="30" WindowChrome.IsHitTestVisibleInChrome="True" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+                <Button Style="{StaticResource SomeButtonStyle}"  Width="68" Name="Minimize" Foreground="Transparent" Click="Minimize_Click" Focusable="True" FontSize="18" Height="25">-</Button>
+                <Button Style="{StaticResource SomeButtonStyle}"  Width="68" x:Name="Close" Click="Close_OnClick_" FontFamily="Microsoft New Tai Lue" Focusable="True" Content="x" FontSize="18" Height="25"/>
             </StackPanel>
         </Grid>
-
         <!-- Logo und name -->
-
-        <Image Source="UI Elements/Logos/kukaplain.png" Margin="22,18,592,436" d:IsLocked="True"></Image>
-        <TextBlock Background="Transparent"   Text="KUKA.AutoMaintenace" Foreground="#FF878787" FontSize="16" Margin="22,69,570,408" Opacity="0.8" d:IsLocked="True" />
+        <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Height="114" Margin="0,20,0,0" >
+            <Image Source="UI Elements/Logos/kukaplain.png" Margin="20,20,1,60" d:IsLocked="True"></Image>
+            <TextBlock Background="Transparent"   Text="KUKA.AutoMaintenace" Foreground="#FF878787" FontSize="16" Margin="20,60,1,1" Opacity="0.8" d:IsLocked="True" />
+        </Grid>
 
         <!--File selection-->
-        <TextBlock x:Name="Importy" Foreground="#FF878787" Text="Import" Margin="91,159,649,311" FontSize="16" d:IsLocked="True"></TextBlock>
-        <Image MouseDown="Import_OnMouseDown" Opacity=".3" Source="UI Elements/MenuButtons/import.png" Margin="87,115,657,336" RenderTransformOrigin="0.479,0.492" d:IsLocked="True"/>
-
-        <TextBlock x:Name="Reset" Foreground="#FF878787" Text="Reset" Margin="265,160,477,318" FontSize="16" d:IsLocked="True"/>
-        <Image MouseDown="Clear_OnMouseDown" Opacity=".3" Source="UI Elements/MenuButtons/delete.png" Margin="260,125,493,336" RenderTransformOrigin="0.479,0.492" d:IsLocked="True"/>
 
 
-        <ListBox Name="fileList"  Margin="40,182,445,20" SelectionMode="Extended" BorderBrush="#FFC9C9C9" BorderThickness="0.5" d:IsLocked="True"></ListBox>
+        <TextBlock x:Name="Importy" Foreground="#FF878787" Text="Import" Margin="300,177,231,195" FontSize="16" d:IsLocked="False"></TextBlock>
+        <Image MouseDown="Import_OnMouseDown" Opacity=".3"  Source="UI Elements/MenuButtons/import.png" Margin="293,118,245,220" RenderTransformOrigin="0.479,0.492" d:IsLocked="False"/>
+
+        <TextBlock x:Name="Reset" Foreground="#FF878787" Text="Reset" Margin="466,176,93,203" FontSize="16" d:IsLocked="False"/>
+        <Image MouseDown="Clear_OnMouseDown" Opacity=".3" Source="UI Elements/MenuButtons/delete.png" Margin="466,134,91,217" RenderTransformOrigin="0.479,0.492" d:IsLocked="False">
+            <Image.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="-1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Image.RenderTransform>
+        </Image>
+
+
+        <!-- List box for zip files-->
+        <ListBox Name="fileList"  Margin="22,106,391,14" SelectionMode="Extended" BorderBrush="#FFC9C9C9" BorderThickness="0.5" d:IsLocked="False"></ListBox>
 
         <!-- Menu buttons -->
-
-        <Image MouseDown="Start_OnMouseDown" Opacity=".3" Source="UI Elements/MenuButtons/update.png" Margin="463,240,219,178" RenderTransformOrigin="0.479,0.492"/>
-
+        <Image MouseDown="Start_OnMouseDown" Opacity=".3" Source="UI Elements/MenuButtons/update.png" Margin="352,243,137,104" RenderTransformOrigin="0.479,0.492">
+            <Image.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="-1" ScaleY="-1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Image.RenderTransform>
+        </Image>
+        <TextBlock x:Name="Reset_Copy" Foreground="#FF878787" Text="Generar" Margin="378,295,160,84" FontSize="16" d:IsLocked="False"/>
         <!-- Watermark -->
-        <TextBlock x:Name="Watermark" TextAlignment="Right" HorizontalAlignment="Right" FontFamily="Siemens Sans" FontSize="10" Margin="0,474,4,0" d:IsLocked="True" ><Run Text="© 2022 KUKA AG. All rights reserved."/><LineBreak/><Run Text="www.github.com/Aleynikovich"/></TextBlock>
+        <TextBlock x:Name="Watermark" TextAlignment="Right" HorizontalAlignment="Right" FontFamily="Siemens Sans" FontSize="10" Margin="0,370,10,0" d:IsLocked="False" RenderTransformOrigin="0.5,0.5" Width="166" >
+            <TextBlock.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleY="1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </TextBlock.RenderTransform><Run Text="© 2022 KUKA AG. All rights reserved."/><LineBreak/><Run Text="www.github.com/Aleynikovich"/></TextBlock>
+
         <!-- Background image -->
-        <Image  Visibility="Visible" Source="UI Elements/Logos/KUKAGREYCIRCLE.png" Opacity=".25" HorizontalAlignment="Left" Height="674" VerticalAlignment="Top" Width="891" Margin="156,50,0,0" IsHitTestVisible="False"/>
+        <Image  Visibility="Visible" Source="UI Elements/Logos/KUKAGREYCIRCLE.png" Opacity=".30" HorizontalAlignment="Left" Height="607" VerticalAlignment="Top" Width="763" Margin="104,30,0,0" IsHitTestVisible="False"/>
+
+        <!-- Check box for debug mode -->
+        <CheckBox Content="Debug Mode" HorizontalAlignment="Left" Margin="486,344,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" Height="21" RenderTransformOrigin="0.5,0.5" Width="108">
+            <CheckBox.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </CheckBox.RenderTransform>
+        </CheckBox>
+
+
     </Grid>
 
 </Window>

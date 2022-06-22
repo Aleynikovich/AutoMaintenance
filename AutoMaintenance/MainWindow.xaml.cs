@@ -1,13 +1,9 @@
 ﻿using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Input;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
-using System.Threading.Tasks;
 using System;
-using System.Windows.Controls;
-using Microsoft.Office.Interop.Word;
 
 namespace AutoMaintenance
 {
@@ -17,9 +13,10 @@ namespace AutoMaintenance
     public partial class MainWindow : System.Windows.Window
     {
 
-
-        string[] filePath = new string[100]; //Path buffer for selected .zip files
+        bool debugMode;
+        string[] filePath = new string[300]; //Path buffer for selected .zip files
         int zipCounter = 0;
+        enum ZipType { archive, krcDiag }
 
         /// <summary>
         /// General functions
@@ -61,8 +58,8 @@ namespace AutoMaintenance
                 zipCounter = 0;
                 foreach (string item in openFileDialog.FileNames)       //Fill filePath strings with the selected .zip file paths
                 {
-                    _ = fileList.Items.Add(Path.GetFileName(item));
-                    filePath[zipCounter] = Path.GetFullPath(item);
+                    _ = fileList.Items.Add(System.IO.Path.GetFileName(item));
+                    filePath[zipCounter] = System.IO.Path.GetFullPath(item);
                     //Trace.WriteLine("added " + filePath[zipCounter]);
                     zipCounter++;
                 }
@@ -80,6 +77,8 @@ namespace AutoMaintenance
         {
             fileList.Items.Clear();
             zipCounter = 0;
+            StringManipulation.DeleteDirectory("Mantenimiento");
+            StringManipulation.DeleteDirectory("Programas");
         }
 
 
@@ -94,9 +93,7 @@ namespace AutoMaintenance
             Directory.CreateDirectory("Mantenimiento");
             Directory.CreateDirectory("Programas");
 
-            ZipArchiveEntry amIniEntry, configEntry, madaEntry;
-            string amIniContent, configContent, madaContent, amInitempFile, configTempFile, madaTempFile;
-            Krc tempKrc = new Krc();
+            ZipType zipType;
 
             if (zipCounter > 0)
             {
@@ -104,56 +101,25 @@ namespace AutoMaintenance
                 {
                     using (ZipArchive archive = ZipFile.OpenRead(filePath[i])) //Open .zip in read mode
                     {
-                        amIniEntry = archive.GetEntry("am.ini");
-                        if (amIniEntry != null)
+                        zipType = archive.GetEntry("am.ini") != null ? ZipType.archive : ZipType.krcDiag;
+
+                        switch (zipType)
                         {
-                            amInitempFile = Path.GetTempFileName();
-                            amIniEntry.ExtractToFile(amInitempFile, true);
-                            amIniContent = File.ReadAllText(amInitempFile);
+                            case ZipType.archive:
 
-                            tempKrc.Name = Libs.StringManipulation.GetBetween(amIniContent, "RobName=", "IRSerialNr=");
-                            tempKrc.SerialNo = Libs.StringManipulation.GetBetween(amIniContent, "IRSerialNr=", "[Version]");
-                            tempKrc.Version = Libs.StringManipulation.GetBetween(amIniContent, "[Version]", "[TechPacks]");
-                            tempKrc.Tech = Libs.StringManipulation.GetBetween(amIniContent, "[TechPacks]", "default");
+                                ArchiveMethod(filePath[i], archive);
 
+                                break;
+
+                            case ZipType.krcDiag:
+
+                                //StringManipulation.KrcDiagMethod(filePath[i], archive);
+                                MessageBox.Show("KrcDiag no soportado en esta versión, utilizar sólo archivados.");
+
+                                break;
+                            default:
+                                break;
                         }
-
-                        configEntry = archive.GetEntry("KRC/R1/System/$config.dat");
-                        if (configEntry != null)
-                        {
-                            configTempFile = Path.GetTempFileName();
-                            configEntry.ExtractToFile(configTempFile, true);
-                            configContent = File.ReadAllText(configTempFile);
-
-                            tempKrc.LoadData = "kek";
-                            //tempKrc.LoadData = Libs.StringManipulation.GetBetween(configContent, "LOAD_DATA[16]\r\n", "\r\n\r\n");
-                        }
-
-                        madaEntry = archive.GetEntry("KRC/R1/Mada/$machine.dat");
-                        if (madaEntry != null)
-                        {
-                            madaTempFile = Path.GetTempFileName();
-                            madaEntry.ExtractToFile(madaTempFile, true);
-                            madaContent = File.ReadAllText(madaTempFile);
-
-                            tempKrc.Type = Libs.StringManipulation.GetBetween(madaContent, "$TRAFONAME[]=\"#", " ");
-                        }
-
-                        //Trace.WriteLine(tempKrc.SerialNo.TrimEnd('\n'));
-                        Directory.CreateDirectory(@"Programas\" + tempKrc.SerialNo.TrimEnd('\r', '\n'));
-                        Directory.CreateDirectory(@"Programas\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + "\\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + " - " + System.DateTime.Now.Year + "-" + System.DateTime.Now.Month + "-" + System.DateTime.Now.Day);
-
-                        var programPath = @"Programas\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + "\\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + " - " + System.DateTime.Now.Year + "-" + System.DateTime.Now.Month + "-" + System.DateTime.Now.Day + "\\" + Path.GetFileName(filePath[i]);
-                        if (File.Exists(programPath))
-                        {
-                            File.Delete(programPath);
-                        }
-
-                        
-                        var templatePath = Path.GetFullPath(@"plantillaAutoMaintenance.docx");
-                        var dirPath = Path.GetFullPath(@"Mantenimiento\");
-                        File.Copy(filePath[i], @"Programas\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + "\\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + " - " + System.DateTime.Now.Year + "-" + System.DateTime.Now.Month + "-" + System.DateTime.Now.Day + "\\" + Path.GetFileName(filePath[i]));
-                        WordLibs.CreateWordDocument(templatePath, dirPath + tempKrc.SerialNo.TrimEnd('\r', '\n') + " - " + System.DateTime.Now.Year + "-" + System.DateTime.Now.Month + "-" + System.DateTime.Now.Day + ".docx", tempKrc);
 
                     }
 
@@ -161,9 +127,93 @@ namespace AutoMaintenance
 
                 MessageBox.Show("Informes generados");
                 fileList.Items.Clear();
+
+                if (debugMode)
+                {
+                    StringManipulation.DeleteDirectory("Mantenimiento");
+                    StringManipulation.DeleteDirectory("Programas");
+                }
+
                 zipCounter = 0;
 
             }
         }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            debugMode = true;
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            debugMode = false;
+        }
+
+
+        private void KrcDiagMethod(string filePath, ZipArchive archive)
+        {
+            //throw new NotImplementedException();
+        }
+
+        public void ArchiveMethod(string filePath, ZipArchive archive)
+        {
+
+            //throw new NotImplementedException();
+            Krc tempKrc = new Krc();
+            ZipArchiveEntry amIniEntry, configEntry, madaEntry;
+            string amIniContent, configContent, madaContent, amInitempFile, configTempFile, madaTempFile;
+
+            amIniEntry = archive.GetEntry("am.ini");
+            if (amIniEntry != null)
+            {
+                amInitempFile = System.IO.Path.GetTempFileName();
+                amIniEntry.ExtractToFile(amInitempFile, true);
+                amIniContent = File.ReadAllText(amInitempFile);
+
+                tempKrc.Name = StringManipulation.GetBetween(amIniContent, "RobName=", "IRSerialNr=");
+                tempKrc.SerialNo = StringManipulation.GetBetween(amIniContent, "IRSerialNr=", "[Version]");
+                tempKrc.Version = StringManipulation.GetBetween(amIniContent, "[Version]", "[TechPacks]");
+                tempKrc.Tech = StringManipulation.GetRealTechData(StringManipulation.GetBetween(amIniContent, "[TechPacks]"));
+
+            }
+
+            configEntry = archive.GetEntry("KRC/R1/System/$config.dat");
+            if (configEntry != null)
+            {
+                configTempFile = System.IO.Path.GetTempFileName();
+                configEntry.ExtractToFile(configTempFile, true);
+                configContent = File.ReadAllText(configTempFile);
+                //TODO: Separate lines and only apply those that have any load DATA. If all have -1 then say so.
+                tempKrc.LoadData = StringManipulation.GetRealLoadData(StringManipulation.GetBetween(configContent, "LOAD_DATA[16]", "\r\n\r\n"));
+
+            }
+
+            madaEntry = archive.GetEntry("KRC/R1/Mada/$machine.dat");
+            if (madaEntry != null)
+            {
+                madaTempFile = System.IO.Path.GetTempFileName();
+                madaEntry.ExtractToFile(madaTempFile, true);
+                madaContent = File.ReadAllText(madaTempFile);
+
+                tempKrc.Type = StringManipulation.GetBetween(madaContent, "$TRAFONAME[]=\"#", " ");
+            }
+
+            //Trace.WriteLine(tempKrc.SerialNo.TrimEnd('\n'));
+            Directory.CreateDirectory(@"Programas\" + tempKrc.SerialNo.TrimEnd('\r', '\n'));
+            Directory.CreateDirectory(@"Programas\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + "\\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + " - " + System.DateTime.Now.Year + "-" + System.DateTime.Now.Month + "-" + System.DateTime.Now.Day);
+
+            var programPath = @"Programas\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + "\\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + " - " + System.DateTime.Now.Year + "-" + System.DateTime.Now.Month + "-" + System.DateTime.Now.Day + "\\" + System.IO.Path.GetFileName(filePath);
+            if (File.Exists(programPath))
+            {
+                File.Delete(programPath);
+            }
+
+            var templatePath = System.IO.Path.GetFullPath(@"plantillaAutoMaintenance.docx");
+            var dirPath = System.IO.Path.GetFullPath(@"Mantenimiento\");
+            File.Copy(filePath, @"Programas\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + "\\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + " - " + System.DateTime.Now.Year + "-" + System.DateTime.Now.Month + "-" + System.DateTime.Now.Day + "\\" + System.IO.Path.GetFileName(filePath));
+            WordLibs.CreateWordDocument(templatePath, dirPath + tempKrc.SerialNo.TrimEnd('\r', '\n') + " - " + DateTime.Now.Year + "-" + System.DateTime.Now.Month + "-" + System.DateTime.Now.Day + ".docx", tempKrc);
+
+        }
     }
+
 }
