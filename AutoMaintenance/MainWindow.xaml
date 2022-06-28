@@ -23,7 +23,7 @@
         <!-- Logo und name -->
         <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Height="114" Margin="0,20,0,0" >
             <Image Source="UI Elements/Logos/kukaplain.png" Margin="20,20,1,60" d:IsLocked="True"></Image>
-            <TextBlock Background="Transparent"   Text="KUKA.AutoMaintenace" Foreground="#FF878787" FontSize="16" Margin="20,60,1,1" Opacity="0.8" d:IsLocked="True" />
+            <TextBlock Background="Transparent"   Text="KUKA.AutoMaintenance" Foreground="#FF878787" FontSize="16" Margin="20,60,1,1" Opacity="0.8" d:IsLocked="True" />
         </Grid>
 
         <!--File selection-->

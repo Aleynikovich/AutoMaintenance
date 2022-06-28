@@ -113,7 +113,7 @@ namespace AutoMaintenance
 
                             case ZipType.krcDiag:
 
-                                //StringManipulation.KrcDiagMethod(filePath[i], archive);
+                                KrcDiagMethod(filePath[i], archive);
                                 MessageBox.Show("KrcDiag no soportado en esta versión, utilizar sólo archivados.");
 
                                 break;
@@ -153,6 +153,61 @@ namespace AutoMaintenance
         private void KrcDiagMethod(string filePath, ZipArchive archive)
         {
             //throw new NotImplementedException();
+
+            Krc tempKrc = new Krc();
+            ZipArchiveEntry amIniEntry, configEntry, madaEntry;
+            string amIniContent, configContent, madaContent, amInitempFile, configTempFile, madaTempFile;
+
+            amIniEntry = archive.GetEntry("am.ini");
+            if (amIniEntry != null)
+            {
+                amInitempFile = System.IO.Path.GetTempFileName();
+                amIniEntry.ExtractToFile(amInitempFile, true);
+                amIniContent = File.ReadAllText(amInitempFile);
+
+                tempKrc.Name = StringManipulation.GetBetween(amIniContent, "RobName=", "IRSerialNr=");
+                tempKrc.SerialNo = StringManipulation.GetBetween(amIniContent, "IRSerialNr=", "[Version]");
+                tempKrc.Version = StringManipulation.GetBetween(amIniContent, "Version=", "\r\n");
+                tempKrc.Tech = StringManipulation.GetRealTechData(StringManipulation.GetBetween(amIniContent, "[TechPacks]"));
+
+            }
+
+            configEntry = archive.GetEntry("KRC/R1/System/$config.dat");
+            if (configEntry != null)
+            {
+                configTempFile = System.IO.Path.GetTempFileName();
+                configEntry.ExtractToFile(configTempFile, true);
+                configContent = File.ReadAllText(configTempFile);
+                //TODO: Separate lines and only apply those that have any load DATA. If all have -1 then say so.
+                tempKrc.LoadData = StringManipulation.GetRealLoadData(StringManipulation.GetBetween(configContent, "LOAD_DATA[16]", "\r\n\r\n"));
+
+            }
+
+            madaEntry = archive.GetEntry("KRC/R1/Mada/$machine.dat");
+            if (madaEntry != null)
+            {
+                madaTempFile = System.IO.Path.GetTempFileName();
+                madaEntry.ExtractToFile(madaTempFile, true);
+                madaContent = File.ReadAllText(madaTempFile);
+
+                tempKrc.Type = StringManipulation.GetBetween(madaContent, "$TRAFONAME[]=\"#", " ");
+            }
+
+            //Trace.WriteLine(tempKrc.SerialNo.TrimEnd('\n'));
+            Directory.CreateDirectory(@"Programas\" + tempKrc.SerialNo.TrimEnd('\r', '\n'));
+            Directory.CreateDirectory(@"Programas\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + "\\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + " - " + System.DateTime.Now.Year + "-" + System.DateTime.Now.Month + "-" + System.DateTime.Now.Day);
+
+            var programPath = @"Programas\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + "\\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + " - " + System.DateTime.Now.Year + "-" + System.DateTime.Now.Month + "-" + System.DateTime.Now.Day + "\\" + System.IO.Path.GetFileName(filePath);
+            if (File.Exists(programPath))
+            {
+                File.Delete(programPath);
+            }
+
+            var templatePath = System.IO.Path.GetFullPath(@"plantillaAutoMaintenance.docx");
+            var dirPath = System.IO.Path.GetFullPath(@"Mantenimiento\");
+            File.Copy(filePath, @"Programas\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + "\\" + tempKrc.SerialNo.TrimEnd('\r', '\n') + " - " + System.DateTime.Now.Year + "-" + System.DateTime.Now.Month + "-" + System.DateTime.Now.Day + "\\" + System.IO.Path.GetFileName(filePath));
+            WordLibs.CreateWordDocument(templatePath, dirPath + tempKrc.SerialNo.TrimEnd('\r', '\n') + " - " + DateTime.Now.Year + "-" + System.DateTime.Now.Month + "-" + System.DateTime.Now.Day + ".docx", tempKrc);
+
         }
 
         public void ArchiveMethod(string filePath, ZipArchive archive)
