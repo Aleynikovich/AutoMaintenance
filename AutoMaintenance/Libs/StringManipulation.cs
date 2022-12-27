@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
-
+using System.Threading;
 
 namespace AutoMaintenance
 {
@@ -126,6 +126,12 @@ namespace AutoMaintenance
 
             return true;
 
+        }
+
+        public static string GetRandomAxisCal(int minimum, int maximum)
+        {
+            Random random = new Random(DateTime.Now.Ticks.GetHashCode());
+            return (random.Next(minimum,maximum)*0.00001).ToString();
         }
 
     }

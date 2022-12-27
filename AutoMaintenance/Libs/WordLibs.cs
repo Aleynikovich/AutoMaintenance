@@ -63,15 +63,24 @@ namespace AutoMaintenance
                     FindAndReplace(wordApp, "<KrName>", krc.Name);
                     FindAndReplace(wordApp, "<KRCVersion>", krc.Version);
                     FindAndReplace(wordApp, "<Tech1>", krc.Tech);
-                    //FindAndReplace(wordApp, "<Tech2>", krc.Tech[1]);
-                    //FindAndReplace(wordApp, "<Tech3>", krc.Tech[2]);
-                    //FindAndReplace(wordApp, "<Tech4>", krc.Tech[3]);
-                    //FindAndReplace(wordApp, "<Tech5>", krc.Tech[4]);
-                    FindAndReplace(wordApp, "<LoadData1>", krc.LoadData[0]);
-                    FindAndReplace(wordApp, "<LoadData2>", krc.LoadData[1]);
-                    FindAndReplace(wordApp, "<LoadData3>", krc.LoadData[2]);
-                    FindAndReplace(wordApp, "<LoadData4>", krc.LoadData[3]);
-                    //FindAndReplace(wordApp, "<LoadData5>", krc.LoadData[4]);
+
+                    try
+                    {
+                        for (int i = 1; i < 7; i++)
+                        {
+                            FindAndReplace(wordApp, "<Axis" + i + ">", krc.AxisData[i]);
+                        }
+                    }
+                    catch (System.Exception)
+                    {
+                        throw;
+                    }
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        FindAndReplace(wordApp, "<LoadData"+i+">", krc.LoadData[i]);
+                    }
+
                     FindAndReplace(wordApp, "<MaintenanceDate>", System.DateTime.Now.Date);
                 }
 

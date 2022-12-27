@@ -4,6 +4,9 @@ using System.Windows.Input;
 using System.IO;
 using System.IO.Compression;
 using System;
+using Microsoft.Office.Interop.Word;
+using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace AutoMaintenance
 {
@@ -24,7 +27,6 @@ namespace AutoMaintenance
         public MainWindow()
         {
             InitializeComponent();
-
         }
 
         private void Minimize_Click(object sender, RoutedEventArgs e)
@@ -113,7 +115,7 @@ namespace AutoMaintenance
 
                             case ZipType.krcDiag:
 
-                                KrcDiagMethod(filePath[i], archive);
+                                //KrcDiagMethod(filePath[i], archive);
                                 MessageBox.Show("KrcDiag no soportado en esta versión, utilizar sólo archivados.");
 
                                 break;
@@ -130,8 +132,8 @@ namespace AutoMaintenance
 
                 if (debugMode)
                 {
-                    StringManipulation.DeleteDirectory("Mantenimiento");
-                    StringManipulation.DeleteDirectory("Programas");
+                    //StringManipulation.DeleteDirectory("Mantenimiento");
+                    //StringManipulation.DeleteDirectory("Programas");
                 }
 
                 zipCounter = 0;
@@ -155,24 +157,27 @@ namespace AutoMaintenance
             //throw new NotImplementedException();
 
             Krc tempKrc = new Krc();
-            ZipArchiveEntry amIniEntry, configEntry, madaEntry;
-            string amIniContent, configContent, madaContent, amInitempFile, configTempFile, madaTempFile;
+            ZipArchiveEntry configEntry, madaEntry, maintenanceLogEntry, KRCDiagLogEntry;
+            string configContent, madaContent, maintenanceLogContent, KRCDiagLogContent;
+            string configTempFile, madaTempFile, maintenanceLogTempFile , KRCDiagLogTempFile;
 
-            amIniEntry = archive.GetEntry("am.ini");
-            if (amIniEntry != null)
+
+            KRCDiagLogEntry = archive.GetEntry("KRCDiag.log");
+            if (KRCDiagLogEntry != null)
             {
-                amInitempFile = System.IO.Path.GetTempFileName();
-                amIniEntry.ExtractToFile(amInitempFile, true);
-                amIniContent = File.ReadAllText(amInitempFile);
+                KRCDiagLogTempFile = System.IO.Path.GetTempFileName();
+                KRCDiagLogEntry.ExtractToFile(KRCDiagLogTempFile, true);
+                KRCDiagLogContent = File.ReadAllText(KRCDiagLogTempFile);
 
-                tempKrc.Name = StringManipulation.GetBetween(amIniContent, "RobName=", "IRSerialNr=");
-                tempKrc.SerialNo = StringManipulation.GetBetween(amIniContent, "IRSerialNr=", "[Version]");
-                tempKrc.Version = StringManipulation.GetBetween(amIniContent, "Version=", "\r\n");
-                tempKrc.Tech = StringManipulation.GetRealTechData(StringManipulation.GetBetween(amIniContent, "[TechPacks]"));
-
+                tempKrc.Name = StringManipulation.GetBetween(KRCDiagLogContent, " Robot Name      ", "\n");
+                tempKrc.SerialNo = StringManipulation.GetBetween(KRCDiagLogContent, "$KR_SERIALNO     ", "\n");
+                tempKrc.Version = StringManipulation.GetBetween(KRCDiagLogContent, "KRC Version     KR C, ", " ");
+                tempKrc.Tech = StringManipulation.GetRealTechData(StringManipulation.GetBetween(KRCDiagLogContent, "[TechPacks]"));
+                tempKrc.RobRunTime = StringManipulation.GetBetween(KRCDiagLogContent, "$ROBRUNTIME      ", "\n");
             }
 
-            configEntry = archive.GetEntry("KRC/R1/System/$config.dat");
+
+            configEntry = archive.GetEntry("Files/KRC/Roboter/KRC/R1/System/$config.dat");
             if (configEntry != null)
             {
                 configTempFile = System.IO.Path.GetTempFileName();
@@ -183,14 +188,21 @@ namespace AutoMaintenance
 
             }
 
-            madaEntry = archive.GetEntry("KRC/R1/Mada/$machine.dat");
+            madaEntry = archive.GetEntry("Files/KRC/Roboter/KRC/R1/Mada/$machine.dat");
             if (madaEntry != null)
             {
                 madaTempFile = System.IO.Path.GetTempFileName();
                 madaEntry.ExtractToFile(madaTempFile, true);
                 madaContent = File.ReadAllText(madaTempFile);
-
                 tempKrc.Type = StringManipulation.GetBetween(madaContent, "$TRAFONAME[]=\"#", " ");
+            }
+
+            maintenanceLogEntry = archive.GetEntry("RDC/MaintenanceLog.xml");
+            if (maintenanceLogEntry != null)
+            {
+                maintenanceLogTempFile = System.IO.Path.GetTempFileName();
+                maintenanceLogEntry.ExtractToFile(maintenanceLogTempFile, true);
+                maintenanceLogContent = File.ReadAllText(maintenanceLogTempFile);
             }
 
             //Trace.WriteLine(tempKrc.SerialNo.TrimEnd('\n'));
@@ -252,6 +264,14 @@ namespace AutoMaintenance
 
                 tempKrc.Type = StringManipulation.GetBetween(madaContent, "$TRAFONAME[]=\"#", " ");
             }
+
+            tempKrc.AxisData = new string[7];
+            Random random = new Random(DateTime.Now.Ticks.GetHashCode());
+            for (int i = 1; i < 7; i++)
+            {
+                tempKrc.AxisData[i] = Math.Round((random.Next(-999, 999) / (Convert.ToDouble(random.Next(1,100)*10000))),5).ToString(); 
+            }
+           
 
             //Trace.WriteLine(tempKrc.SerialNo.TrimEnd('\n'));
             Directory.CreateDirectory(@"Programas\" + tempKrc.SerialNo.TrimEnd('\r', '\n'));
